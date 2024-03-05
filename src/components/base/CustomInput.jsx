@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {TextInput, View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors, Fonts} from '../../../assets';
 import VectorIcons from '../base/VectorIcons';
+import CustomText from './CustomText';
 
 const CustomInput = ({
   value,
@@ -24,7 +25,11 @@ const CustomInput = ({
         style={[
           styles.inputContainer,
           {
-            borderColor: isFocused ? Colors.black : Colors.lightGray,
+            borderColor: errorMessage
+              ? Colors.red
+              : isFocused
+              ? Colors.black
+              : Colors.lightGray,
             borderWidth: isFocused ? 1.3 : 1,
           },
         ]}>
@@ -63,7 +68,7 @@ const CustomInput = ({
       {!!errorMessage && (
         <View style={styles.errorMessage}>
           <CustomText
-            label={`${errorMessage}*`}
+            title={`${errorMessage}*`}
             color={Colors.red}
             fontFamily={Fonts.Regular}
             fontSize={13}
