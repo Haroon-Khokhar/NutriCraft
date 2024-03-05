@@ -5,7 +5,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {Colors} from '../../../assets';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
-const ScreenWrapper = ({children, backgroundColor}) => {
+const ScreenWrapper = ({children, backgroundColor, paddingHorizontal}) => {
   return (
     <SafeAreaView
       style={[
@@ -16,7 +16,7 @@ const ScreenWrapper = ({children, backgroundColor}) => {
       ]}>
       <StatusBar backgroundColor={Colors.white} barStyle="dark-content" />
       <KeyboardAwareScrollView
-        contentContainerStyle={{paddingHorizontal: 10}}
+        contentContainerStyle={{paddingHorizontal: paddingHorizontal || 10}}
         showsVerticalScrollIndicator={false}>
         {children}
       </KeyboardAwareScrollView>

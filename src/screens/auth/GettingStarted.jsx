@@ -13,16 +13,16 @@ import {useNavigation} from '@react-navigation/native';
 const GettingStarted = () => {
   const navigation = useNavigation();
   return (
-    <View>
+    <View style={{flex: 1, backgroundColor: Colors.white}}>
       <CustomImage
         source={Images.gettingStarted}
-        width={wp(100)}
-        height={hp(90)}
+        width={'100%'}
+        height={'90%'}
       />
       <View
         style={{
-          width: wp(100),
-          height: hp(10),
+          width: '100%',
+          height: '10%',
           alignItems: 'center',
           backgroundColor: Colors.skyBlue,
           justifyContent: 'center',

@@ -21,9 +21,7 @@ const ForgotPassword = () => {
 
   const handleForgotPassword = () => {
     console.log('forgot password email is=====', inputData);
-    if (inputData) {
-      navigation.navigate('otp');
-    }
+    navigation.navigate('otp');
   };
   return (
     <ScreenWrapper>

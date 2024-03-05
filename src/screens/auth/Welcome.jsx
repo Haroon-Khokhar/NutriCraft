@@ -11,12 +11,12 @@ import {useNavigation} from '@react-navigation/native';
 const Welcome = () => {
   const navigation = useNavigation();
   return (
-    <View style={{backgroundColor: Colors.white}}>
-      <CustomImage source={Images.welcome} width={wp(100)} height={hp(70)} />
+    <View style={{flex: 1, backgroundColor: Colors.white}}>
+      <CustomImage source={Images.welcome} width={'100%'} height={'70%'} />
       <View
         style={{
-          width: wp(100),
-          height: hp(30),
+          width: '100%',
+          height: '30%',
           marginHorizontal: wp(5),
           marginVertical: hp(3),
         }}>
@@ -36,8 +36,8 @@ const Welcome = () => {
           style={{
             flexDirection: 'row',
             alignItems: 'center',
-            width: wp(90),
-            height: hp(10),
+            width: '90%',
+            height: '35%',
             justifyContent: 'space-between',
           }}>
           <CustomButton
