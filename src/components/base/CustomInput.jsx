@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import {TextInput, View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors, Fonts} from '../../../assets';
-import VectorIcons from '../base/VectorIcons';
 import CustomText from './CustomText';
+import VectorIcons from './VectorIcons';
 
 const CustomInput = ({
   value,

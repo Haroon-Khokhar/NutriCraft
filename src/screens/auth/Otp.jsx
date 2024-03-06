@@ -4,7 +4,7 @@ import {
   CustomButton,
   CustomImage,
   CustomText,
-  ScreenWrapper,
+  AuthWrapper,
 } from '../../components';
 import {
   widthPercentageToDP as wp,
@@ -33,7 +33,7 @@ const Otp = () => {
     console.log('resend otp here======');
   };
   return (
-    <ScreenWrapper>
+    <AuthWrapper>
       <View
         style={{
           flex: 1,
@@ -102,7 +102,7 @@ const Otp = () => {
                     title={'Resend OTP'}
                     color={Colors.skyBlue}
                     fontFamily={Fonts.Medium}
-                    style={{marginLeft: 5, textDecorationLine:'underline'}}
+                    style={{marginLeft: 5, textDecorationLine: 'underline'}}
                   />
                 </TouchableOpacity>
               </View>
@@ -118,7 +118,7 @@ const Otp = () => {
           </View>
         </View>
       </View>
-    </ScreenWrapper>
+    </AuthWrapper>
   );
 };
 

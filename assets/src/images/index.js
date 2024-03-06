@@ -7,6 +7,13 @@ import auth3 from './auth3.png';
 import auth4 from './auth4.png';
 import facebookLogo from './facebookLogo.png';
 import googleLogo from './googleLogo.png';
+import bgImageDetailScreen from './bgImageDetailScreen.png';
+import bgImageHome from './bgImageHome.png';
+import bgImageProfile from './bgImageProfile.png';
+import logo from './logo.png';
+import starEmpty from './starEmpty.png';
+import starFilled from './starFilled.png';
+import user from './user.png';
 
 export const Images = {
   splash,
@@ -18,4 +25,11 @@ export const Images = {
   auth4,
   facebookLogo,
   googleLogo,
+  bgImageDetailScreen,
+  bgImageHome,
+  bgImageProfile,
+  logo,
+  starEmpty,
+  starFilled,
+  user,
 };

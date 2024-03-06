@@ -5,7 +5,7 @@ import {
   CustomImage,
   CustomInput,
   CustomText,
-  ScreenWrapper,
+  AuthWrapper,
 } from '../../components';
 import {
   widthPercentageToDP as wp,
@@ -41,7 +41,7 @@ const ResetPassword = () => {
     navigation.navigate('login');
   };
   return (
-    <ScreenWrapper>
+    <AuthWrapper>
       <View
         style={{
           flex: 1,
@@ -103,7 +103,7 @@ const ResetPassword = () => {
           </View>
         </View>
       </View>
-    </ScreenWrapper>
+    </AuthWrapper>
   );
 };
 

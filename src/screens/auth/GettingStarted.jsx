@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 import {Colors, Fonts, Images} from '../../../assets';
-import {CustomButton, ScreenWrapper} from '../../components';
+import {CustomButton, AuthWrapper} from '../../components';
 import {CustomText} from '../../components';
 import {CustomImage} from '../../components';
 import {

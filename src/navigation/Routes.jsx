@@ -7,6 +7,7 @@ import SignUp from '../screens/auth/Signup';
 import Otp from '../screens/auth/Otp';
 import ResetPassword from '../screens/auth/ResetPassword';
 import ForgotPassword from '../screens/auth/ForgotPassword';
+import Home from '../screens/main/Home';
 
 const Stack = createNativeStackNavigator();
 
@@ -15,6 +16,7 @@ const Routes = () => {
     <Stack.Navigator
       screenOptions={{headerShown: false}}
       initialRouteName={'gettingStarted'}>
+      {/* Auth Screens */}
       <Stack.Screen name="gettingStarted" component={GettingStarted} />
       <Stack.Screen name="welcomeScreen" component={Welcome} />
       <Stack.Screen name="login" component={Login} />
@@ -22,6 +24,9 @@ const Routes = () => {
       <Stack.Screen name="forgotPassword" component={ForgotPassword} />
       <Stack.Screen name="otp" component={Otp} />
       <Stack.Screen name="resetPassword" component={ResetPassword} />
+
+      {/* Main Screens */}
+      <Stack.Screen name="home" component={Home} />
     </Stack.Navigator>
   );
 };
