@@ -17,25 +17,26 @@ const MainWrapper = ({
   return (
     <SafeAreaView style={[styles.mainContainer]}>
       <StatusBar backgroundColor={'transparent'} barStyle="dark-content" />
-      {/* <ImageBackground source={bgImage} resizeMode="cover" style={styles.image}> */}
-      {/* <BlurView blurAmount={30} blurType="light" style={{flex: 1}}> */}
-      {/* <LinearGradient
+      <ImageBackground source={bgImage} resizeMode="cover" style={styles.image}>
+        <BlurView blurAmount={30} blurType="light" style={{flex: 1}}>
+          <LinearGradient
             colors={['rgba(255,255,255,0.6)', 'rgba(255,255,255,0.5)']}
             start={{x: 0, y: 1}}
             end={{x: 1, y: 1}}
             useAngle
             angle={110}
-            style={{flex: 1}}> */}
-      <KeyboardAwareScrollView
-        contentContainerStyle={{
-          paddingHorizontal: paddingHorizontal || widthPercentageToDP('7%'),
-        }}
-        showsVerticalScrollIndicator={false}>
-        {children}
-      </KeyboardAwareScrollView>
-      {/* </LinearGradient> */}
-      {/* </BlurView> */}
-      {/* </ImageBackground> */}
+            style={{flex: 1}}>
+            <KeyboardAwareScrollView
+              contentContainerStyle={{
+                paddingHorizontal:
+                  paddingHorizontal || widthPercentageToDP('7%'),
+              }}
+              showsVerticalScrollIndicator={false}>
+              {children}
+            </KeyboardAwareScrollView>
+          </LinearGradient>
+        </BlurView>
+      </ImageBackground>
     </SafeAreaView>
   );
 };
