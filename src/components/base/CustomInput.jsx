@@ -3,6 +3,10 @@ import {TextInput, View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors, Fonts} from '../../../assets';
 import CustomText from './CustomText';
 import VectorIcons from './VectorIcons';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 
 const CustomInput = ({
   value,
@@ -14,8 +18,13 @@ const CustomInput = ({
   borderColor,
   keyboardType,
   onBlur,
-  placeholderText,
   editable,
+  height,
+  fontSize,
+  endIcon,
+  iconFamily,
+  iconName,
+  startIcon,
 }) => {
   const [hidePass, setHidePass] = useState(secureTextEntry || false);
   const [isFocused, setIsFocused] = useState(false);
@@ -30,12 +39,43 @@ const CustomInput = ({
               : isFocused
               ? Colors.black
               : Colors.lightGray,
+            backgroundColor: Colors.white,
             borderWidth: isFocused ? 1.3 : 1,
           },
         ]}>
+        {startIcon && (
+          <View
+            style={{
+              width: wp('15%'),
+              marginRight: -wp('12%'),
+              height: '70%',
+              alignItems: 'center',
+            }}>
+            <TouchableOpacity
+              style={{marginTop: 2}}
+              onPress={() => setHidePass(!hidePass)}>
+              <VectorIcons
+                family={iconFamily}
+                name={iconName}
+                color={Colors.lightGray}
+                size={25}
+              />
+            </TouchableOpacity>
+          </View>
+        )}
         <TextInput
           editable={editable}
-          style={[styles.input, multiline && styles.multiline]}
+          style={[
+            styles.input,
+            multiline && styles.multiline,
+            {
+              height: height || 50,
+              fontFamily: Fonts.Regular,
+              fontSize: fontSize || 15,
+              paddingRight: endIcon ? 60 : 0,
+              paddingLeft: startIcon ? 40 : 20,
+            },
+          ]}
           value={value}
           keyboardType={keyboardType || 'default'}
           onChangeText={onChange}
@@ -50,7 +90,7 @@ const CustomInput = ({
             onBlur && onBlur();
           }}
         />
-        {secureTextEntry ? (
+        {secureTextEntry && (
           <TouchableOpacity
             style={{marginLeft: -35}}
             onPress={() => setHidePass(!hidePass)}>
@@ -61,8 +101,28 @@ const CustomInput = ({
               size={22}
             />
           </TouchableOpacity>
-        ) : (
-          <></>
+        )}
+        {endIcon && (
+          <View
+            style={{
+              width: wp('12%'),
+              borderLeftWidth: 1,
+              borderLeftColor: Colors.lightGray,
+              marginLeft: -wp('12%'),
+              height: '70%',
+              alignItems: 'center',
+            }}>
+            <TouchableOpacity
+              style={{marginTop: 2}}
+              onPress={() => setHidePass(!hidePass)}>
+              <VectorIcons
+                family={iconFamily}
+                name={iconName}
+                color={Colors.lightGray}
+                size={25}
+              />
+            </TouchableOpacity>
+          </View>
         )}
       </View>
       {!!errorMessage && (
@@ -89,7 +149,6 @@ const styles = StyleSheet.create({
   },
   input: {
     fontSize: 18,
-    height: 50,
     padding: 0,
     margin: 0,
     paddingLeft: 20,

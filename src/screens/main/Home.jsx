@@ -7,6 +7,8 @@ import {
   CustomText,
   AuthWrapper,
   MainWrapper,
+  VectorIcons,
+  DishCard,
 } from '../../components';
 import {
   widthPercentageToDP as wp,
@@ -17,6 +19,30 @@ import {useNavigation} from '@react-navigation/native';
 
 const Home = () => {
   const navigation = useNavigation();
+
+  const popularDishes = [
+    {
+      image: Images.dish1,
+      dishName: 'Potato dish',
+      isLiked: true,
+    },
+    {
+      image: Images.dish2,
+      dishName: 'Potato Cabbage',
+      isLiked: false,
+    },
+    {
+      image: Images.dish3,
+      dishName: 'capsicum or chili',
+      isLiked: false,
+    },
+    {
+      image: Images.dish4,
+      dishName: 'Green peas',
+      isLiked: true,
+    },
+  ];
+
   return (
     <MainWrapper bgImage={Images.bgImageHome}>
       <View
@@ -48,10 +74,56 @@ const Home = () => {
             source={Images.user}
             height={40}
             width={40}
-            style={{borderRadius: 20, backgroundColor: 'grey'}}
+            style={{backgroundColor: 'grey'}}
             resizeMode={'contain'}
+            borderRadius={20}
           />
         </View>
+      </View>
+      <View style={{marginVertical: hp('2.5%')}}>
+        <CustomInput
+          placeholder={'Search by scan image '}
+          height={40}
+          fontSize={13}
+          endIcon
+          iconFamily={'EvilIcons'}
+          iconName={'camera'}
+        />
+      </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
+        <CustomText
+          title={'Popular Dishes'}
+          fontFamily={Fonts.Medium}
+          fontSize={20}
+        />
+        <CustomText
+          title={'See all'}
+          fontFamily={Fonts.Medium}
+          fontSize={16}
+          color={Colors.skyBlue}
+        />
+      </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          justifyContent: 'space-between',
+          marginBottom: hp('10%'),
+        }}>
+        {popularDishes.map(dish => {
+          return (
+            <DishCard
+              image={dish.image}
+              dishName={dish.dishName}
+              isLiked={dish.isLiked}
+            />
+          );
+        })}
       </View>
     </MainWrapper>
   );

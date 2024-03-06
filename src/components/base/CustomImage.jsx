@@ -4,7 +4,15 @@ import FastImage from 'react-native-fast-image';
 import ImageModal from 'react-native-image-modal';
 import {Colors} from '../../../assets';
 
-const CustomImage = ({source, style, withModal, width, height, resizeMode}) => {
+const CustomImage = ({
+  source,
+  style,
+  withModal,
+  width,
+  height,
+  resizeMode,
+  borderRadius,
+}) => {
   const [isImageLoading, setIsImageLoading] = useState(false);
 
   if (withModal) {
@@ -38,13 +46,22 @@ const CustomImage = ({source, style, withModal, width, height, resizeMode}) => {
     );
   } else {
     return (
-      <View style={{width: width, height: height, alignSelf: 'center'}}>
+      <View
+        style={{
+          width: width,
+          height: height,
+          alignSelf: 'center',
+          borderRadius: borderRadius || 0,
+        }}>
         <FastImage
           onLoadStart={() => setIsImageLoading(true)}
           onLoadEnd={() => setIsImageLoading(false)}
           resizeMode={resizeMode || 'cover'}
           source={source}
-          style={[style, {height: '100%', width: '100%'}]}
+          style={[
+            style,
+            {height: '100%', width: '100%', borderRadius: borderRadius || 0},
+          ]}
         />
         {isImageLoading && (
           <ActivityIndicator
