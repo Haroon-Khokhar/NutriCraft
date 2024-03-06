@@ -34,7 +34,7 @@ const Login = () => {
 
   const handleLogin = () => {
     console.log('inputData======', inputData);
-    navigation.navigate('home');
+    navigation.navigate('tabStack');
   };
 
   return (
