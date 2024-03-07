@@ -47,7 +47,7 @@ const Home = () => {
     <MainWrapper bgImage={Images.bgImageHome}>
       <View
         style={{
-          marginTop: hp('8%'),
+          marginTop: hp('5%'),
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
@@ -113,7 +113,7 @@ const Home = () => {
           flexDirection: 'row',
           flexWrap: 'wrap',
           justifyContent: 'space-between',
-          marginBottom: hp('10%'),
+          marginBottom: hp('5%'),
         }}>
         {popularDishes.map(dish => {
           return (
@@ -121,6 +121,7 @@ const Home = () => {
               image={dish.image}
               dishName={dish.dishName}
               isLiked={dish.isLiked}
+              handleHowToMake={() => navigation.navigate('dishDetail', {dish})}
             />
           );
         })}

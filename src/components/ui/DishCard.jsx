@@ -10,7 +10,9 @@ import {
 const DishCard = ({image, dishName, isLiked, handleHowToMake}) => {
   return (
     <View style={{width: wp('40%'), marginVertical: hp('1.5%')}}>
-      <TouchableOpacity style={{borderRadius: wp('5%')}}>
+      <TouchableOpacity
+        style={{borderRadius: wp('5%')}}
+        onPress={handleHowToMake}>
         <CustomImage
           source={image}
           height={hp('18%')}
@@ -35,6 +37,7 @@ const DishCard = ({image, dishName, isLiked, handleHowToMake}) => {
           fontFamily={Fonts.Medium}
           width={'55%'}
           height={hp('4%')}
+          onPress={handleHowToMake}
         />
         <TouchableOpacity>
           <VectorIcons

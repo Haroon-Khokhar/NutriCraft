@@ -50,7 +50,7 @@ const SignUp = () => {
 
   const handleSIgnUp = () => {
     console.log('signUp input data=====', inputData);
-    navigation.navigate('home');
+    navigation.navigate('tabStack');
   };
 
   return (
