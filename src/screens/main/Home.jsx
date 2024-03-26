@@ -115,9 +115,10 @@ const Home = () => {
           justifyContent: 'space-between',
           marginBottom: hp('5%'),
         }}>
-        {popularDishes.map(dish => {
+        {popularDishes.map((dish, index) => {
           return (
             <DishCard
+              key={index}
               image={dish.image}
               dishName={dish.dishName}
               isLiked={dish.isLiked}

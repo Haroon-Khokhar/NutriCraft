@@ -17,6 +17,7 @@ const CustomButton = ({
   borderRadius,
   fontFamily,
   style,
+  marginVertical,
 }) => {
   return (
     <TouchableOpacity
@@ -33,6 +34,7 @@ const CustomButton = ({
           width: width || '50%',
           borderRadius: borderRadius || 50,
           backgroundColor: backgroundColor || Colors.darkGray,
+          marginVertical: marginVertical || 0,
         },
       ]}>
       {loading ? (
