@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import {
   CustomButton,
   CustomImage,
@@ -13,6 +13,8 @@ import {
 } from 'react-native-responsive-screen';
 import {Colors, Fonts, Images} from '../../../assets';
 import {useNavigation} from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 const SignUp = () => {
   const [inputData, setInputData] = useState({
@@ -23,6 +25,7 @@ const SignUp = () => {
     weight: '',
     age: '',
   });
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
   const inputArray = [
     {
@@ -48,9 +51,34 @@ const SignUp = () => {
     },
   ];
 
-  const handleSIgnUp = () => {
+  const handleSIgnUp = async () => {
     console.log('signUp input data=====', inputData);
-    navigation.navigate('tabStack');
+    try {
+      setLoading(true);
+      const credential = await auth().createUserWithEmailAndPassword(
+        inputData.email,
+        inputData.password,
+      );
+
+      await firestore().collection('users').doc(credential.user.uid).set({
+        name: inputData.fullName,
+        weight: inputData.weight,
+        age: inputData.age,
+        email: inputData.email,
+        password: inputData.password,
+      });
+
+      setLoading(false);
+      console.log('successfully signed in.');
+
+      navigation.replace('tabStack', {screen: 'home'});
+      Alert.alert('Signup Successful', 'You can now sign in.');
+    } catch (error) {
+      console.log('signup error======', error);
+      setLoading(false);
+      Alert.alert('Error', error.message);
+    }
+    // navigation.navigate('tabStack');
   };
 
   return (
@@ -107,7 +135,10 @@ const SignUp = () => {
               height={50}
               backgroundColor={Colors.skyBlue}
               style={{marginTop: hp(5)}}
+              loading={loading}
+              disabled={loading}
             />
+            <CustomText />
           </View>
           <View
             style={{

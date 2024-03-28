@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "667631390798",
+    "project_id": "nutricraft-9a205",
+    "storage_bucket": "nutricraft-9a205.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:667631390798:android:8a77eac265ccf43b77731f",
+        "android_client_info": {
+          "package_name": "com.nutricraft"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrNPTBnqBPHJ_mN40r4UrAfAU9bemfBN8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import {
   CustomButton,
   CustomImage,
@@ -13,6 +13,7 @@ import {
 } from 'react-native-responsive-screen';
 import {Colors, Fonts, Images} from '../../../assets';
 import {useNavigation} from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
 
 const Login = () => {
   const [inputData, setInputData] = useState({
@@ -32,9 +33,26 @@ const Login = () => {
     },
   ];
 
-  const handleLogin = () => {
-    console.log('inputData======', inputData);
-    navigation.navigate('tabStack');
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async () => {
+    try {
+      // console.log('inputData for login====', inputData);
+      setLoading(true);
+      await auth().signInWithEmailAndPassword(
+        inputData.email,
+        inputData.password,
+      );
+      setLoading(false);
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'tabStack'}],
+      });
+    } catch (error) {
+      console.log('login error:', error.code, error.message);
+      setLoading(false);
+      Alert.alert('Error', error.message);
+    }
   };
 
   return (
@@ -100,6 +118,8 @@ const Login = () => {
               height={50}
               backgroundColor={Colors.skyBlue}
               style={{marginTop: hp(10)}}
+              loading={loading}
+              disabled={loading}
             />
           </View>
           <View

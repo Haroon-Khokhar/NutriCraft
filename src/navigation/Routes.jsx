@@ -16,11 +16,11 @@ import TabStack from './TabStack';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const Routes = () => {
+const Routes = ({user}) => {
   return (
     <Stack.Navigator
       screenOptions={{headerShown: false}}
-      initialRouteName={'gettingStarted'}>
+      initialRouteName={user ? 'tabStack' : 'gettingStarted'}>
       {/* Auth Screens */}
       <Stack.Screen name="gettingStarted" component={GettingStarted} />
       <Stack.Screen name="welcomeScreen" component={Welcome} />
