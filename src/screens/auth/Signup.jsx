@@ -17,68 +17,112 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
 const SignUp = () => {
-  const [inputData, setInputData] = useState({
-    fullName: '',
-    email: '',
-    password: '',
-    weight: '',
-    weight: '',
-    age: '',
-  });
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
-  const inputArray = [
+
+  const [signupFormData, setSignupFormData] = useState([
     {
       name: 'fullName',
       placeholder: 'Enter full name',
+      value: '',
+      error: '',
+      regex: /.*/, // Default regex, any non-empty string is valid
     },
     {
       name: 'email',
       placeholder: 'Enter email',
+      value: '',
+      error: '',
+      regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, // Email regex pattern
     },
     {
       name: 'password',
       placeholder: 'Enter Password',
+      value: '',
+      error: '',
+      regex: /^.{6,}$/, // Password length regex pattern
       secureTextEntry: true,
     },
     {
       name: 'weight',
       placeholder: 'Enter weight',
+      value: '',
+      error: '',
+      regex: /.*/, // Default regex, any non-empty string is valid
     },
     {
       name: 'age',
       placeholder: 'Enter age',
+      value: '',
+      error: '',
+      regex: /.*/, // Default regex, any non-empty string is valid
     },
-  ];
+  ]);
+
+  const handleInputChange = (name, value) => {
+    setSignupFormData(prevState => {
+      return prevState.map(item => {
+        if (item.name === name) {
+          return {...item, value: value};
+        }
+        return item;
+      });
+    });
+  };
 
   const handleSIgnUp = async () => {
-    console.log('signUp input data=====', inputData);
-    try {
-      setLoading(true);
-      const credential = await auth().createUserWithEmailAndPassword(
-        inputData.email,
-        inputData.password,
-      );
-
-      await firestore().collection('users').doc(credential.user.uid).set({
-        name: inputData.fullName,
-        weight: inputData.weight,
-        age: inputData.age,
-        email: inputData.email,
-        password: inputData.password,
+    let errors = {};
+    signupFormData.forEach(item => {
+      if (!item.value.trim()) {
+        errors[item.name] = `${item.name} is Required.`;
+      } else if (!item.regex.test(item.value)) {
+        errors[item.name] =
+          item.name === 'email'
+            ? 'Invalid email address'
+            : item.name === 'password'
+            ? 'Password must be at least 6 characters'
+            : '';
+      } else {
+        errors[item.name] = '';
+      }
+    });
+    setSignupFormData(prevState => {
+      return prevState.map(item => {
+        return {...item, error: errors[item.name]};
       });
+    });
 
-      setLoading(false);
-      console.log('successfully signed in.');
+    const hasErrors = Object.values(errors).some(error => error);
+    if (!hasErrors) {
+      try {
+        setLoading(true);
+        const credential = await auth().createUserWithEmailAndPassword(
+          signupFormData[1].value,
+          signupFormData[2].value,
+        );
 
-      navigation.replace('tabStack', {screen: 'home'});
-      Alert.alert('Signup Successful', 'You can now sign in.');
-    } catch (error) {
-      console.log('signup error======', error);
-      setLoading(false);
-      Alert.alert('Error', error.message);
+        // await firestore().collection('users').doc(credential.user.uid).set({
+        //   name: signupFormData[0].value,
+        //   email: signupFormData[1].value,
+        //   password: signupFormData[2].value,
+        //   weight: signupFormData[3].value,
+        //   age: signupFormData[4].value,
+        // });
+
+        setLoading(false);
+        console.log('successfully signed in.');
+
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'tabStack'}],
+        });
+        Alert.alert('Success', 'Signed in with Nutricraft successfully.');
+      } catch (error) {
+        console.log('signup error======', error);
+        setLoading(false);
+        Alert.alert('Error', error.message);
+      }
     }
-    // navigation.navigate('tabStack');
   };
 
   return (
@@ -103,31 +147,25 @@ const SignUp = () => {
               fontFamily={Fonts.SemiBold}
               fontSize={24}
             />
-            {inputArray.map((item, index) => {
-              return (
-                <View key={index} style={styles.inputContainer}>
-                  <CustomInput
-                    placeholder={item.placeholder}
-                    onChange={e => {
-                      setInputData(prevState => ({
-                        ...prevState,
-                        [item.name]: e,
-                      }));
-                    }}
-                    keyboardType={
-                      item.name == 'age' || item.name == 'weight'
-                        ? 'numeric'
-                        : item.name == 'email'
-                        ? 'email-address'
-                        : 'default'
-                    }
-                    value={inputData[item.name]}
-                    secureTextEntry={item.secureTextEntry}
-                    borderColor={Colors.lightGray}
-                  />
-                </View>
-              );
-            })}
+            {signupFormData.map((item, index) => (
+              <View key={index} style={styles.inputContainer}>
+                <CustomInput
+                  placeholder={item.placeholder}
+                  onChange={text => handleInputChange(item.name, text)}
+                  keyboardType={
+                    item.name === 'age' || item.name === 'weight'
+                      ? 'numeric'
+                      : item.name === 'email'
+                      ? 'email-address'
+                      : 'default'
+                  }
+                  value={item.value}
+                  secureTextEntry={item.secureTextEntry}
+                  borderColor={Colors.lightGray}
+                  errorMessage={item.error}
+                />
+              </View>
+            ))}
             <CustomButton
               onPress={handleSIgnUp}
               title={'Continue'}
