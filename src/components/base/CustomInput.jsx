@@ -25,6 +25,7 @@ const CustomInput = ({
   iconFamily,
   iconName,
   startIcon,
+  onEndIconPress,
 }) => {
   const [hidePass, setHidePass] = useState(secureTextEntry || false);
   const [isFocused, setIsFocused] = useState(false);
@@ -114,7 +115,10 @@ const CustomInput = ({
             }}>
             <TouchableOpacity
               style={{marginTop: 2}}
-              onPress={() => setHidePass(!hidePass)}>
+              onPress={() => {
+                setHidePass(!hidePass);
+                onEndIconPress();
+              }}>
               <VectorIcons
                 family={iconFamily}
                 name={iconName}
