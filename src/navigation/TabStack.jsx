@@ -141,7 +141,7 @@ const TabStack = () => {
         keyboardHidesTabBar: true,
       }}>
       <Tab.Screen name={'home'} component={Home} />
-      <Tab.Screen name={'search'} component={Search} />
+      <Tab.Screen name={'search'} component={Home} />
       <Tab.Screen name={'favourites'} component={Favourites} />
       <Tab.Screen name={'profile'} component={Profile} />
     </Tab.Navigator>

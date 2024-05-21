@@ -7,20 +7,11 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const AuthWrapper = ({children, backgroundColor, paddingHorizontal}) => {
   return (
-    <SafeAreaView
-      style={[
-        styles.mainContainer,
-        {
-          backgroundColor: backgroundColor || Colors.white,
-        },
-      ]}>
-      <StatusBar backgroundColor={'transparent'} barStyle="dark-content" />
-      <KeyboardAwareScrollView
-        contentContainerStyle={{paddingHorizontal: paddingHorizontal || 10}}
-        showsVerticalScrollIndicator={false}>
-        {children}
-      </KeyboardAwareScrollView>
-    </SafeAreaView>
+    <KeyboardAwareScrollView
+      contentContainerStyle={{paddingHorizontal: paddingHorizontal || 10}}
+      showsVerticalScrollIndicator={false}>
+      {children}
+    </KeyboardAwareScrollView>
   );
 };
 

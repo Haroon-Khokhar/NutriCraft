@@ -23,6 +23,11 @@ import dish6 from './dish6.jpg';
 import dish7 from './dish7.jpg';
 import dish8 from './dish8.jpg';
 import dish9 from './dish9.jpg';
+import potato from './potato.png';
+import onion from './onion.png';
+import capsicum from './capsicum.png';
+import tomato from './tomato.png';
+import close from './close.png';
 
 export const Images = {
   splash,
@@ -50,4 +55,9 @@ export const Images = {
   dish7,
   dish8,
   dish9,
+  potato,
+  onion,
+  capsicum,
+  tomato,
+  close,
 };
