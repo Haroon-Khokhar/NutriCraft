@@ -1,6 +1,5 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {
   ForgotPassword,
   GettingStarted,
@@ -14,13 +13,12 @@ import {DishDetail} from '../screens/main';
 import TabStack from './TabStack';
 
 const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
 
-const Routes = () => {
+const Routes = ({user}) => {
   return (
     <Stack.Navigator
       screenOptions={{headerShown: false}}
-      initialRouteName={'gettingStarted'}>
+      initialRouteName={user ? 'tabStack' : 'gettingStarted'}>
       {/* Auth Screens */}
       <Stack.Screen name="gettingStarted" component={GettingStarted} />
       <Stack.Screen name="welcomeScreen" component={Welcome} />

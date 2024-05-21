@@ -1,5 +1,6 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import {
   CustomButton,
   CustomImage,
@@ -13,28 +14,80 @@ import {
 } from 'react-native-responsive-screen';
 import {Colors, Fonts, Images} from '../../../assets';
 import {useNavigation} from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
 
 const Login = () => {
-  const [inputData, setInputData] = useState({
-    email: '',
-    password: '',
-  });
   const navigation = useNavigation();
-  const inputArray = [
+  const [loading, setLoading] = useState(false);
+  const [loginFormData, setLoginFormData] = useState([
     {
       name: 'email',
+      value: '',
       placeholder: 'user@gmail.com',
+      error: '',
+      regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
     },
     {
       name: 'password',
+      value: '',
       placeholder: '***************',
       secureTextEntry: true,
+      error: '',
+      regex: /^.{6,}$/,
     },
-  ];
+  ]);
 
-  const handleLogin = () => {
-    console.log('inputData======', inputData);
-    navigation.navigate('tabStack');
+  const handleLogin = async () => {
+    let errors = {};
+    loginFormData.forEach(item => {
+      if (!item.value.trim()) {
+        errors[item.name] = `${item.name} is Required.`;
+      } else if (!item.regex.test(item.value)) {
+        errors[item.name] =
+          item.name === 'email'
+            ? 'Invalid email address'
+            : 'Password must be at least 6 characters';
+      } else {
+        errors[item.name] = '';
+      }
+    });
+    setLoginFormData(prevState => {
+      return prevState.map(item => {
+        return {...item, error: errors[item.name]};
+      });
+    });
+
+    const hasErrors = Object.values(errors).some(error => error);
+    if (!hasErrors) {
+      try {
+        setLoading(true);
+        await auth().signInWithEmailAndPassword(
+          loginFormData[0].value,
+          loginFormData[1].value,
+        );
+        setLoading(false);
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'tabStack'}],
+        });
+        Alert.alert('Success', 'Logged in successfully.');
+      } catch (error) {
+        console.log('login error:', error.code, error.message);
+        setLoading(false);
+        Alert.alert('Error', error.message);
+      }
+    }
+  };
+
+  const handleInputChange = (name, value) => {
+    setLoginFormData(prevState => {
+      return prevState.map(item => {
+        if (item.name === name) {
+          return {...item, value: value};
+        }
+        return item;
+      });
+    });
   };
 
   return (
@@ -60,23 +113,20 @@ const Login = () => {
               fontFamily={Fonts.SemiBold}
               fontSize={24}
             />
-            {inputArray.map((item, index) => {
+            {loginFormData.map((item, index) => {
+              console.log(item.error);
               return (
                 <View key={index} style={styles.inputContainer}>
                   <CustomInput
                     placeholder={item.placeholder}
-                    onChange={e => {
-                      setInputData(prevState => ({
-                        ...prevState,
-                        [item.name]: e,
-                      }));
-                    }}
+                    onChange={text => handleInputChange(item.name, text)}
                     keyboardType={
                       item.name == 'email' ? 'email-address' : 'default'
                     }
-                    value={inputData[item.name]}
+                    value={item.value}
                     secureTextEntry={item.secureTextEntry}
                     borderColor={Colors.lightGray}
+                    errorMessage={item.error}
                   />
                 </View>
               );
@@ -100,6 +150,8 @@ const Login = () => {
               height={50}
               backgroundColor={Colors.skyBlue}
               style={{marginTop: hp(10)}}
+              loading={loading}
+              disabled={loading}
             />
           </View>
           <View
