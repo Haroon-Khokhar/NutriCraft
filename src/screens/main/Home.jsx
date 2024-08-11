@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {
   CustomButton,
@@ -88,6 +88,9 @@ const Home = () => {
           endIcon
           iconFamily={'EvilIcons'}
           iconName={'camera'}
+          onEndIconPress={() => {
+            navigation.navigate('camera');
+          }}
         />
       </View>
       <View

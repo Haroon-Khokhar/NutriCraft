@@ -9,7 +9,7 @@ import {
   Signup,
   Welcome,
 } from '../screens/auth';
-import {DishDetail} from '../screens/main';
+import {Camera, DishDetail} from '../screens/main';
 import TabStack from './TabStack';
 
 const Stack = createNativeStackNavigator();
@@ -31,6 +31,7 @@ const Routes = ({user}) => {
       {/* Main Screens */}
       <Stack.Screen name="tabStack" component={TabStack} />
       <Stack.Screen name="dishDetail" component={DishDetail} />
+      <Stack.Screen name="camera" component={Camera} />
     </Stack.Navigator>
   );
 };
