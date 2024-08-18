@@ -1,6 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import React, { useState } from 'react';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  ToastAndroid,
+} from 'react-native';
 import {
   CustomButton,
   CustomImage,
@@ -12,8 +19,8 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Colors, Fonts, Images} from '../../../assets';
-import {useNavigation} from '@react-navigation/native';
+import { Colors, Fonts, Images } from '../../../assets';
+import { useNavigation } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 
 const Login = () => {
@@ -53,7 +60,7 @@ const Login = () => {
     });
     setLoginFormData(prevState => {
       return prevState.map(item => {
-        return {...item, error: errors[item.name]};
+        return { ...item, error: errors[item.name] };
       });
     });
 
@@ -61,20 +68,42 @@ const Login = () => {
     if (!hasErrors) {
       try {
         setLoading(true);
-        await auth().signInWithEmailAndPassword(
+        const credentials = await auth().signInWithEmailAndPassword(
           loginFormData[0].value,
           loginFormData[1].value,
         );
         setLoading(false);
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'tabStack'}],
-        });
-        Alert.alert('Success', 'Logged in successfully.');
+        console.log('credentials:', credentials?.user?.emailVerified);
+        if (credentials?.user?.emailVerified) {
+          ToastAndroid.show('User logged in successfully.', ToastAndroid.TOP);
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'tabStack' }],
+          });
+        } else {
+          ToastAndroid.show('Email is not verified.', ToastAndroid.SHORT);
+          auth().signOut();
+          credentials?.user?.sendEmailVerification();
+          ToastAndroid.show('Verification email sent, Pleae check your inbox.', ToastAndroid.LONG);
+        }
       } catch (error) {
         console.log('login error:', error.code, error.message);
+        if (error.code == 'auth/user-not-found') {
+          ToastAndroid.show(
+            'User not found with this email.',
+            ToastAndroid.SHORT,
+          );
+        }
+        if (error.code == 'auth/wrong-password') {
+          ToastAndroid.show('Your Password is Incorrect.', ToastAndroid.SHORT);
+        }
+        if (error.code == 'auth/too-many-requests') {
+          ToastAndroid.show(
+            'Too many requests, Please try again later',
+            ToastAndroid.LONG,
+          );
+        }
         setLoading(false);
-        Alert.alert('Error', error.message);
       }
     }
   };
@@ -83,7 +112,7 @@ const Login = () => {
     setLoginFormData(prevState => {
       return prevState.map(item => {
         if (item.name === name) {
-          return {...item, value: value};
+          return { ...item, value: value };
         }
         return item;
       });
@@ -107,14 +136,13 @@ const Login = () => {
           />
         </View>
         <View>
-          <View style={{marginTop: hp(8), width: wp(85), alignSelf: 'center'}}>
+          <View style={{ marginTop: hp(8), width: wp(85), alignSelf: 'center' }}>
             <CustomText
               title={'Login'}
               fontFamily={Fonts.SemiBold}
               fontSize={24}
             />
             {loginFormData.map((item, index) => {
-              console.log(item.error);
               return (
                 <View key={index} style={styles.inputContainer}>
                   <CustomInput
@@ -149,7 +177,7 @@ const Login = () => {
               width={wp(85)}
               height={50}
               backgroundColor={Colors.skyBlue}
-              style={{marginTop: hp(10)}}
+              style={{ marginTop: hp(10) }}
               loading={loading}
               disabled={loading}
             />
@@ -175,7 +203,7 @@ const Login = () => {
               title={'OR'}
               fontFamily={Fonts.SemiBold}
               fontSize={18}
-              style={{marginHorizontal: 5}}
+              style={{ marginHorizontal: 5 }}
             />
             <View
               style={{
@@ -220,7 +248,7 @@ const Login = () => {
                 title={'Signup'}
                 color={Colors.skyBlue}
                 fontFamily={Fonts.Bold}
-                style={{marginHorizontal: 5}}
+                style={{ marginHorizontal: 5 }}
               />
             </TouchableOpacity>
           </View>

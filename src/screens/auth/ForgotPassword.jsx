@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {View, StyleSheet} from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet, ToastAndroid } from 'react-native';
 import {
   CustomButton,
   CustomImage,
@@ -11,8 +11,9 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Colors, Fonts, Images} from '../../../assets';
-import {useNavigation} from '@react-navigation/native';
+import { Colors, Fonts, Images } from '../../../assets';
+import { useNavigation } from '@react-navigation/native';
+import { firebase } from '@react-native-firebase/auth';
 
 const ForgotPassword = () => {
   const [inputData, setInputData] = useState('');
@@ -21,7 +22,27 @@ const ForgotPassword = () => {
 
   const handleForgotPassword = () => {
     console.log('forgot password email is=====', inputData);
-    navigation.navigate('otp');
+    firebase
+      .auth()
+      .sendPasswordResetEmail(inputData)
+      .then(() => {
+        ToastAndroid.show(
+          'Please check your inbox, we have sent password reset email.',
+          ToastAndroid.SHORT,
+        );
+        navigation.navigate('login');
+      })
+      .catch(function (error) {
+        console.log('Error sending password reset email:', error);
+        if (error?.code == 'auth/invalid-email') {
+          ToastAndroid.show(
+            'Please enter a valid email address.',
+            ToastAndroid.SHORT,
+          );
+          return;
+        }
+        ToastAndroid.show('Something went wrong.', ToastAndroid.SHORT);
+      });
   };
   return (
     <AuthWrapper>
@@ -39,7 +60,7 @@ const ForgotPassword = () => {
           />
         </View>
         <View>
-          <View style={{marginTop: hp(8), width: wp(85), alignSelf: 'center'}}>
+          <View style={{ marginTop: hp(8), width: wp(85), alignSelf: 'center' }}>
             <CustomText
               title={'Forgot Your password'}
               fontFamily={Fonts.SemiBold}
@@ -69,7 +90,7 @@ const ForgotPassword = () => {
               width={wp(85)}
               height={50}
               backgroundColor={Colors.skyBlue}
-              style={{marginTop: hp(15)}}
+              style={{ marginTop: hp(15) }}
             />
           </View>
         </View>

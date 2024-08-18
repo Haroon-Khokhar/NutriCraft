@@ -23,8 +23,6 @@ function App() {
     setShowSplash(false);
   };
 
-  console.log('user in App======', user);
-
   return (
     <SafeAreaProvider>
       <NavigationContainer>
