@@ -73,7 +73,7 @@ const Login = () => {
           loginFormData[1].value,
         );
         setLoading(false);
-        console.log('credentials:', credentials?.user?.emailVerified);
+        // console.log('credentials:', credentials?.user?.emailVerified);
         if (credentials?.user?.emailVerified) {
           ToastAndroid.show('User logged in successfully.', ToastAndroid.TOP);
           navigation.reset({
