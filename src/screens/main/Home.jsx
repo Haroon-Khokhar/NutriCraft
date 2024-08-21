@@ -1,13 +1,10 @@
-import React, {useState, useRef} from 'react';
+import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import {
-  CustomButton,
   CustomImage,
   CustomInput,
   CustomText,
-  AuthWrapper,
   MainWrapper,
-  VectorIcons,
   DishCard,
 } from '../../components';
 import {
@@ -80,19 +77,7 @@ const Home = () => {
           />
         </View>
       </View>
-      <View style={{marginVertical: hp('2.5%')}}>
-        <CustomInput
-          placeholder={'Search by scan image '}
-          height={40}
-          fontSize={13}
-          endIcon
-          iconFamily={'EvilIcons'}
-          iconName={'camera'}
-          onEndIconPress={() => {
-            navigation.navigate('camera');
-          }}
-        />
-      </View>
+      <View style={{marginVertical: hp(4)}} />
       <View
         style={{
           flexDirection: 'row',

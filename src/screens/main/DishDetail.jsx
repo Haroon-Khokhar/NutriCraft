@@ -1,5 +1,5 @@
-import React, {useRef} from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native';
 import {
   CustomButton,
   CustomImage,
@@ -9,10 +9,14 @@ import {
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
+  widthPercentageToDP,
 } from 'react-native-responsive-screen';
-import {Colors, Fonts, Icons, Images} from '../../../assets';
-import {useNavigation} from '@react-navigation/native';
+import { Colors, Fonts, Icons, Images } from '../../../assets';
+import { useNavigation } from '@react-navigation/native';
 import RBSheet from 'react-native-raw-bottom-sheet';
+import StarRating from 'react-native-star-rating-widget';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 const DishDetail = props => {
   const dish = props.route.params.dish;
@@ -41,6 +45,50 @@ const DishDetail = props => {
     },
   ];
 
+  const [rating, setRating] = useState(0);
+  const [saveRatingLoading, SetSaveRatingLoading] = useState(false);
+
+  useEffect(() => {
+    // setRating(2)
+    fetchRating();
+  }, [refRBSheet]);
+
+  const fetchRating = async () => {
+    try {
+      const user = auth().currentUser;
+      if (user) {
+        const loggedInUser = await user.getIdTokenResult();
+        const docRef = firestore()
+          .collection('users')
+          .doc(loggedInUser?.claims?.email);
+        const userData = (await docRef.get()).data();
+        setRating(userData?.rating);
+      }
+    } catch (error) {
+      console.log('fetching ratng error:>', error);
+    }
+  };
+
+  const handleSaveRating = async () => {
+    SetSaveRatingLoading(true);
+    try {
+      const user = auth().currentUser;
+      if (user) {
+        const loggedInUser = await user.getIdTokenResult();
+        const docRef = firestore()
+          .collection('users')
+          .doc(loggedInUser?.claims?.email);
+        const updatedUserData = { rating: rating };
+        await docRef.update(updatedUserData);
+        ToastAndroid.show('Rating updated successfully', ToastAndroid.SHORT);
+        SetSaveRatingLoading(false)
+      }
+    } catch (error) {
+      console.log('saving rating error:>', error);
+      SetSaveRatingLoading(false)
+    }
+  };
+
   return (
     <MainWrapper bgImage={Images.bgImageHome}>
       <View
@@ -49,7 +97,7 @@ const DishDetail = props => {
         }}>
         <CustomImage source={dish.image} width={wp(100)} height={hp(40)} />
         <View>
-          <View style={{marginTop: hp(3)}}>
+          <View style={{ marginTop: hp(3) }}>
             <CustomText
               title={dish.dishName}
               fontSize={20}
@@ -74,7 +122,7 @@ const DishDetail = props => {
               fontSize={16}
               fontFamily={Fonts.Regular}
               color={Colors.lightGray}
-              style={{marginLeft: wp(2), marginRight: wp(4)}}
+              style={{ marginLeft: wp(2), marginRight: wp(4) }}
             />
             <Icons.size height={25} width={25} />
             <CustomText
@@ -82,7 +130,7 @@ const DishDetail = props => {
               fontSize={16}
               fontFamily={Fonts.Regular}
               color={Colors.lightGray}
-              style={{marginLeft: wp(2), marginRight: wp(4)}}
+              style={{ marginLeft: wp(2), marginRight: wp(4) }}
             />
             <Icons.kcal height={20} width={20} />
             <CustomText
@@ -90,10 +138,10 @@ const DishDetail = props => {
               fontSize={16}
               fontFamily={Fonts.Regular}
               color={Colors.lightGray}
-              style={{marginLeft: wp(2), marginRight: wp(4)}}
+              style={{ marginLeft: wp(2), marginRight: wp(4) }}
             />
           </View>
-          <View style={{marginTop: hp(3)}}>
+          <View style={{ marginTop: hp(3) }}>
             <CustomText
               title={'Description'}
               fontSize={20}
@@ -108,7 +156,7 @@ const DishDetail = props => {
               color={Colors.lightGray}
             />
           </View>
-          <View style={{marginTop: hp(3)}}>
+          <View style={{ marginTop: hp(3) }}>
             <CustomText
               title={'Ingredients'}
               fontSize={20}
@@ -124,7 +172,7 @@ const DishDetail = props => {
                     justifyContent: 'space-between',
                     marginTop: hp(1.5),
                   }}>
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <CustomImage
                       source={ingerdient.image}
                       width={wp(10)}
@@ -136,7 +184,7 @@ const DishDetail = props => {
                       fontSize={16}
                       fontFamily={Fonts.Regular}
                       color={Colors.black}
-                      style={{marginLeft: wp(3), marginRight: wp(4)}}
+                      style={{ marginLeft: wp(3), marginRight: wp(4) }}
                     />
                   </View>
                   <CustomText
@@ -148,7 +196,7 @@ const DishDetail = props => {
                 </View>
               );
             })}
-            <View style={{marginTop: hp(1.5)}}>
+            <View style={{ marginTop: hp(1.5) }}>
               <CustomButton
                 title={'Made it'}
                 fontSize={15}
@@ -163,10 +211,10 @@ const DishDetail = props => {
         </View>
         <RBSheet
           ref={refRBSheet}
-          height={220}
+          height={300}
           closeOnPressBack
           draggable
-          dragOnContent
+          // dragOnContent
           customStyles={{
             wrapper: {
               backgroundColor: 'rgba(0, 0, 0, 0.45)',
@@ -200,13 +248,25 @@ const DishDetail = props => {
             <CustomImage source={Images.close} height={12} width={12} />
           </TouchableOpacity>
           <View
-            style={{top: -wp(25), alignSelf: 'center', alignItems: 'center'}}>
+            style={{ top: -wp(25), alignSelf: 'center', alignItems: 'center' }}>
             <CustomImage source={Images.logo} width={wp(55)} height={wp(55)} />
             <CustomText
-              title={'Rate your experience with us!'}
+              title={
+                rating == 1
+                  ? 'Very Poor'
+                  : rating == 2
+                    ? 'Poor'
+                    : rating == 3
+                      ? 'Average'
+                      : rating == 4
+                        ? 'Good'
+                        : rating == 5
+                          ? 'Excellant'
+                          : 'Rate your experience with us!'
+              }
               fontSize={17}
               fontFamily={Fonts.Medium}
-              style={{marginTop: 20}}
+              style={{ marginTop: rating ? 10 : 20 }}
             />
             <View
               style={{
@@ -215,14 +275,32 @@ const DishDetail = props => {
                 justifyContent: 'space-evenly',
                 marginTop: 15,
               }}>
-              {new Array(5).fill('').map((item, index) => {
-                return (
-                  <TouchableOpacity key={index}>
-                    <Icons.starOulined height={25} width={25} key={index} />
-                  </TouchableOpacity>
-                );
-              })}
+              <StarRating
+                rating={rating}
+                onChange={setRating}
+                enableHalfStar={false}
+                enableSwiping
+              />
             </View>
+            {rating ? (
+              <CustomText
+                title={'Thanks for giving us rating!'}
+                fontSize={17}
+                fontFamily={Fonts.Medium}
+                style={{ marginTop: 10 }}
+              />
+            ) : (
+              <></>
+            )}
+            <CustomButton
+              title={'Rate Us'}
+              style={{ marginTop: 10 }}
+              backgroundColor={Colors.skyBlue}
+              onPress={handleSaveRating}
+              loading={saveRatingLoading}
+              disabled={saveRatingLoading}
+              width={widthPercentageToDP(30)}
+            />
           </View>
         </RBSheet>
       </View>

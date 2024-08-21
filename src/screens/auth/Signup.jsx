@@ -1,5 +1,11 @@
-import React, {useState} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ToastAndroid,
+} from 'react-native';
 import {
   CustomButton,
   CustomImage,
@@ -12,7 +18,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {Colors, Fonts, Images} from '../../../assets';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
@@ -20,44 +26,52 @@ const SignUp = () => {
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
-  const [signupFormData, setSignupFormData] = useState([
-    {
-      name: 'fullName',
-      placeholder: 'Enter full name',
-      value: '',
-      error: '',
-      regex: /.*/, // Default regex, any non-empty string is valid
-    },
-    {
-      name: 'email',
-      placeholder: 'Enter email',
-      value: '',
-      error: '',
-      regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, // Email regex pattern
-    },
-    {
-      name: 'password',
-      placeholder: 'Enter Password',
-      value: '',
-      error: '',
-      regex: /^.{6,}$/, // Password length regex pattern
-      secureTextEntry: true,
-    },
-    {
-      name: 'weight',
-      placeholder: 'Enter weight',
-      value: '',
-      error: '',
-      regex: /.*/, // Default regex, any non-empty string is valid
-    },
-    {
-      name: 'age',
-      placeholder: 'Enter age',
-      value: '',
-      error: '',
-      regex: /.*/, // Default regex, any non-empty string is valid
-    },
-  ]);
+  const inputsData = [{
+    name: 'fullName',
+    placeholder: 'Enter full name',
+    value: '',
+    error: '',
+    regex: /.*/,
+  },
+  {
+    name: 'email',
+    placeholder: 'Enter email',
+    value: '',
+    error: '',
+    regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+  },
+  {
+    name: 'password',
+    placeholder: 'Enter Password',
+    value: '',
+    error: '',
+    regex: /^.{6,}$/,
+    secureTextEntry: true,
+  },
+  {
+    name: 'weight',
+    placeholder: 'Enter weight',
+    value: '',
+    error: '',
+    regex: /.*/,
+  },
+  {
+    name: 'age',
+    placeholder: 'Enter age',
+    value: '',
+    error: '',
+    regex: /.*/,
+  }]
+
+  const [signupFormData, setSignupFormData] = useState(inputsData);
+
+  const isFocused = useIsFocused()
+
+  useEffect(() => {
+    if(!isFocused){
+    setSignupFormData(inputsData);
+  }
+  }, [isFocused]);
 
   const handleInputChange = (name, value) => {
     setSignupFormData(prevState => {
@@ -100,27 +114,32 @@ const SignUp = () => {
           signupFormData[1].value,
           signupFormData[2].value,
         );
-
-        // await firestore().collection('users').doc(credential.user.uid).set({
-        //   name: signupFormData[0].value,
-        //   email: signupFormData[1].value,
-        //   password: signupFormData[2].value,
-        //   weight: signupFormData[3].value,
-        //   age: signupFormData[4].value,
-        // });
-
-        setLoading(false);
-        console.log('successfully signed in.');
-
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'tabStack'}],
+        await firestore().collection('users').doc(credential.user.email).set({
+          id: credential.user.uid,
+          name: signupFormData[0].value,
+          email: signupFormData[1].value,
+          password: signupFormData[2].value,
+          weight: signupFormData[3].value,
+          age: signupFormData[4].value,
+          app_rating: 0,
         });
-        Alert.alert('Success', 'Signed in with Nutricraft successfully.');
+        await credential.user.sendEmailVerification();
+        await auth().signOut();
+        setLoading(false);
+        ToastAndroid.show(
+          'Verification email sent, Pleae check your inbox.',
+          ToastAndroid.LONG,
+        );
+        navigation.navigate('login');
       } catch (error) {
+        if (error.code == 'auth/email-already-in-use') {
+          ToastAndroid.show(
+            'Email is already in use by another user.',
+            ToastAndroid.SHORT,
+          );
+        }
         console.log('signup error======', error);
         setLoading(false);
-        Alert.alert('Error', error.message);
       }
     }
   };
