@@ -26,6 +26,7 @@ const MainWrapper = ({
         style={{flex: 1}}>
         <KeyboardAwareScrollView
           contentContainerStyle={{
+            flex:1,
             paddingHorizontal: paddingHorizontal || widthPercentageToDP('6%'),
           }}
           showsVerticalScrollIndicator={false}>
@@ -38,9 +39,6 @@ const MainWrapper = ({
 };
 
 const styles = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-  },
   image: {
     flex: 1,
   },

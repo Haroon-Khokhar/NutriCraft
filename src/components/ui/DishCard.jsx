@@ -7,21 +7,22 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
-const DishCard = ({image, dishName, isLiked, handleHowToMake}) => {
+const DishCard = ({image, dishName, isLiked, handleHowToMake, isImageUrl}) => {
+
   return (
     <View style={{width: wp('40%'), marginVertical: hp('1.5%')}}>
-      <TouchableOpacity
+      <TouchableOpacity activeOpacity={0.5}
         style={{borderRadius: wp('5%')}}
         onPress={handleHowToMake}>
         <CustomImage
-          source={image}
+          source={isImageUrl ? {uri:image} : image}
           height={hp('18%')}
           width={'100%'}
           borderRadius={wp('5%')}
         />
       </TouchableOpacity>
       <View style={{marginVertical: hp('.5%'), marginTop: hp('1%')}}>
-        <CustomText title={dishName} fontSize={16} fontFamily={Fonts.Medium} />
+        <CustomText title={dishName} fontSize={16} fontFamily={Fonts.Medium} color={Colors.black} />
       </View>
       <View
         style={{
@@ -39,7 +40,7 @@ const DishCard = ({image, dishName, isLiked, handleHowToMake}) => {
           height={hp('4%')}
           onPress={handleHowToMake}
         />
-        <TouchableOpacity>
+        <TouchableOpacity disabled>
           <VectorIcons
             name={isLiked ? 'heart' : 'heart-outline'}
             family={'Ionicons'}
