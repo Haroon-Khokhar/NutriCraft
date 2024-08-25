@@ -14,7 +14,6 @@ const CustomImage = ({
   borderRadius,
 }) => {
   const [isImageLoading, setIsImageLoading] = useState(false);
-
   if (withModal) {
     return (
       <View style={{width: width, height: height}}>

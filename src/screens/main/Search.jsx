@@ -1,5 +1,5 @@
-import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, FlatList, ActivityIndicator, Linking, ToastAndroid } from 'react-native';
 import {
   CustomImage,
   CustomInput,
@@ -10,33 +10,63 @@ import {
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
+  heightPercentageToDP,
 } from 'react-native-responsive-screen';
-import {Colors, Fonts, Images} from '../../../assets';
-import {useNavigation} from '@react-navigation/native';
+import { Colors, Fonts, Images } from '../../../assets';
+import { useNavigation } from '@react-navigation/native';
+import { openCamera } from 'react-native-image-crop-picker';
+
+const APP_ID = '6408aaaf';
+const APP_KEY = '38b3802b487f80df555360b87a6e6fac';
 
 const Search = () => {
-  const popularDishes = [
-    {
-      image: Images.dish1,
-      dishName: 'Potato dish',
-      isLiked: true,
-    },
-    {
-      image: Images.dish2,
-      dishName: 'Potato Cabbage',
-      isLiked: false,
-    },
-    {
-      image: Images.dish3,
-      dishName: 'capsicum or chili',
-      isLiked: false,
-    },
-    {
-      image: Images.dish4,
-      dishName: 'Green peas',
-      isLiked: true,
-    },
-  ];
+  const [searchText, setSearchText] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const [dishes, setDishes] = useState([]);
+
+  const onCameraClick = () => {
+    const imageOption = {
+      mediaType: 'photo',
+      quality: 0.8,
+      compressImageQuality: 0.8,
+      forceJpg: true,
+    };
+    try {
+      setTimeout(async () => {
+        const result = await openCamera(imageOption);
+        if (result) {
+          console.log('result==>>', result);
+          ToastAndroid.show(
+            'Image clicked with camera.',
+            ToastAndroid.SHORT,
+          );
+        }
+      }, 500);
+    } catch (error) {
+      console.log('takePhotoFromCamera error', error);
+    }
+  };
+
+  useEffect(() => {
+      searchRecipeByName(searchText);
+  }, [searchText]);
+
+  const searchRecipeByName = async query => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `https://api.edamam.com/search?q=${query}&app_id=${APP_ID}&app_key=${APP_KEY}`,
+      );
+      const data = await response.json();
+      setDishes(data?.hits);
+      setLoading(false);
+    } catch (error) {
+      console.error('search recipe error:>', error);
+      console.log(false);
+    }
+  };
+
   return (
     <MainWrapper bgImage={Images.bgImageHome}>
       <View
@@ -53,12 +83,12 @@ const Search = () => {
             color={Colors.lightGray}
           />
           <CustomText
-            title={'what would you like'}
+            title={'Enter search text or capture'}
             fontFamily={Fonts.Medium}
             fontSize={20}
           />
           <CustomText
-            title={'to cook today ?'}
+            title={'image To search a recipe'}
             fontFamily={Fonts.Medium}
             fontSize={20}
           />
@@ -68,23 +98,24 @@ const Search = () => {
             source={Images.user}
             height={40}
             width={40}
-            style={{backgroundColor: 'grey'}}
+            style={{ backgroundColor: 'grey' }}
             resizeMode={'contain'}
             borderRadius={20}
           />
         </View>
       </View>
-      <View style={{marginVertical: hp('2.5%')}}>
+      <View style={{ marginVertical: hp('2.5%') }}>
         <CustomInput
           placeholder={'Search by scan image '}
+          value={searchText}
+          onChange={text => setSearchText(text)}
           height={40}
           fontSize={13}
           endIcon
+          secureTextEntry={false}
           iconFamily={'EvilIcons'}
           iconName={'camera'}
-          onEndIconPress={() => {
-            navigation.navigate('camera');
-          }}
+          onEndIconPress={onCameraClick}
         />
       </View>
       <View
@@ -94,35 +125,52 @@ const Search = () => {
           justifyContent: 'space-between',
         }}>
         <CustomText
-          title={'Popular Dishes'}
+          title={'Searched Dishes'}
           fontFamily={Fonts.Medium}
           fontSize={20}
-        />
-        <CustomText
-          title={'See all'}
-          fontFamily={Fonts.Medium}
-          fontSize={16}
-          color={Colors.skyBlue}
         />
       </View>
       <View
         style={{
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          justifyContent: 'space-between',
-          marginBottom: hp('5%'),
+          flex: 1,
         }}>
-        {popularDishes.map((dish, index) => {
-          return (
-            <DishCard
-              key={index}
-              image={dish.image}
-              dishName={dish.dishName}
-              isLiked={dish.isLiked}
-              handleHowToMake={() => navigation.navigate('dishDetail', {dish})}
-            />
-          );
-        })}
+        <FlatList
+          data={dishes}
+          numColumns={2}
+          columnWrapperStyle={{ justifyContent: 'space-between' }}
+          renderItem={({ item, index }) => {
+            return (
+              <DishCard
+                key={index}
+                image={item?.recipe?.image}
+                dishName={item?.recipe?.label}
+                isLiked={item?.isLiked}
+                handleHowToMake={() => Linking.openURL(item.recipe.url)}
+                isImageUrl={true}
+              />
+            );
+          }}
+          keyExtractor={(item, index) => index}
+          ListEmptyComponent={
+            <View
+              style={{
+                flex: 1,
+                height: heightPercentageToDP(55),
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              {loading ? (
+                <ActivityIndicator color={Colors.black} size={'large'} />
+              ) : (
+                <CustomText
+                  title="No dishes to display."
+                  color={'black'}
+                  fontSize={16}
+                />
+              )}
+            </View>
+          }
+        />
       </View>
     </MainWrapper>
   );

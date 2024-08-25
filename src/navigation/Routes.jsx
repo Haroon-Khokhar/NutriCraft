@@ -25,13 +25,12 @@ const Routes = ({user}) => {
       <Stack.Screen name="login" component={Login} />
       <Stack.Screen name="signUp" component={Signup} />
       <Stack.Screen name="forgotPassword" component={ForgotPassword} />
-      <Stack.Screen name="otp" component={Otp} />
-      <Stack.Screen name="resetPassword" component={ResetPassword} />
+      {/* <Stack.Screen name="otp" component={Otp} /> */}
+      {/* <Stack.Screen name="resetPassword" component={ResetPassword} /> */}
 
       {/* Main Screens */}
       <Stack.Screen name="tabStack" component={TabStack} />
       <Stack.Screen name="dishDetail" component={DishDetail} />
-      <Stack.Screen name="camera" component={Camera} />
     </Stack.Navigator>
   );
 };
